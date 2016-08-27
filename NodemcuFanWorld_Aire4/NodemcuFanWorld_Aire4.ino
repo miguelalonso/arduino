@@ -51,7 +51,7 @@ IPAddress server_emon(163,117,157,189); //ordenador jaen-espectros2
 String apikey_emon="9bbe8aedfc502644f616dd98e3b4f737";
 unsigned long lastConnectionTime_emon = 0;             // last time you connected to the server, in milliseconds
 boolean lastConnected_emon = false;                    // state of the connection last time through the main loop
-const unsigned long postingInterval_emon = 28000; // delay between updates, in milliseconds
+unsigned long postingInterval_emon = 28000; // delay between updates, in milliseconds
 
 IRsend irsend(4);//an IR led is connected to GPIO4 (pin D2 on NodeMCU)
 int j=0;
@@ -87,7 +87,7 @@ int streamData[streamCount];    // change float to long if needed for your data
 
 unsigned long lastConnectionTime_xiv = 0;             // last time you connected to the server, in milliseconds
 boolean lastConnected_xiv = false;                    // state of the connection last time through the main loop
-const unsigned long postingInterval_xiv = 60000; // delay between updates, in milliseconds
+unsigned long postingInterval_xiv = 60000; // delay between updates, in milliseconds
 float Pot_INV_auto; //potencia del inversor conectado a red Altavista 107 
 float Pot_INV_red; //potencia del inversor conectado a red Altavista 107
 float PAC_casa; //potencia casa Altavista 107    
@@ -136,17 +136,21 @@ void setup()
   Serial.println("waiting for sync");
   setSyncProvider(getNtpTime);
   digitalWrite(ledPin, HIGH);
-  Serial.println("Waiting 30 seconds...");
+  Serial.println("Waiting 10 seconds...");
   delay(10000);
   Serial.println("Inicializando variables");
-  lastReadEMONCMSTime = millis();
-    for (i=0;i<3;i++){
+  postingInterval_emon = 0;
+  readingEMONCMSinterval=0;
+  postingInterval_xiv = 0;
     read_emoncms_variables();
     envio_emon();
     Xively2();
-    }
-  Serial.println("Iniciado...");
+    delay(5000);
+    Serial.println("Iniciado...");
   delay(5000);
+  postingInterval_emon = 28000;
+  readingEMONCMSinterval=90000;
+  postingInterval_xiv = 60000;
 }
 
 
